@@ -18,65 +18,47 @@
 #include <iomanip>
 
 
-/*
- * TEST
- */
-/*
-#include "COMMON/error_check.hpp"
-#include "COMMON/timer.hpp"
-#include "COMMON/version.hpp"
-#include "COMMON/processorinfo.hpp"
-
+#include "COMM/error_check.hpp"
+#include "COMM/timer.hpp"
+#include "COMM/version.hpp"
+#include "COMM/processorinfo.hpp"
+#include "COMM/readdatafromstring.hpp"
 
 #include "UTIL/vectorstasticsfn.hpp"
 #include "UTIL/init_parallel_communication.hpp"
-*/
 
 /*
- * Global variables */
+ * Global variables
+ */
 
 
 
 
 int main(int argc, char *argv[])
 {
-	double t0;
+
+	// Setting Version information
 	time_t	m_t = time(0);
 	struct	tm* m_now;
 	m_now = localtime(& m_t);
-
-	std::cout << "TEST";
-
-	//Common::processor_info_MIC	proc_info(2, 2);
-	//Common::version ver(1, 1,  m_now->tm_year + 1900, m_now->tm_mon + 1, m_now->tm_mday, "TEST");
-
-	//init_parallel_communication(argc, argv, ver, proc_info, t0);
-
-	int totalProcs;
-#pragma offload target(mic:0)
-	totalProcs = omp_get_num_procs();
+	Common::version ver(1, 1,  m_now->tm_year + 1900, m_now->tm_mon + 1, m_now->tm_mday, "TEST");
 
 
-	int N = 2000000000;
-	int nthread = 12;
-	float* buff;
-//
-//	double dt;
-//	dt = Common::dtime();
-//	for (int n = 0; n <= 5; n++)
-//		buff = ranf_OMP(N, nthread);
-//	dt = Common::dtime() - dt;
-//
-//	double dt1 = Common::dtime();
-//	for (int n = 0; n <= 5; n++)
-//	{
-//		for (int i = 0; i < N; i++)	buff[i] = ranf();
-//	}
-//	dt1 = Common::dtime() - dt1;
-//
-//
-//	// Problem Setting Section
-//	std::string	simulation_title	= "Test";
-//	std::string	mesh_file_name		= "PlasmaGun_ver1.cas";
+	// Initialize MPI and Offloading Process
+	double t0;
+	Common::processor_info_MIC	proc_info(1, 2);
+	init_parallel_communication(argc, argv, ver, proc_info, t0);
+	if (proc_info.taskID == 0) proc_info.show_info();
+
+
+
+	// Problem Setting Section
+	std::string	simulation_title	= "Test";
+	std::string	mesh_file_name		= "FILE: PlasmaGun_ver1.cas  // FILE NAME    ";
+	simulation_title = Common::read_data_from_string::read_string(mesh_file_name, "FILE:");
+
+
+	int a = 0;
+
 //	std::string	species_file_name	= "species_info.dat";
 }
