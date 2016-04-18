@@ -80,7 +80,17 @@ std::string ErrorCodes::ExceedLimit()
 
 std::string ErrorCodes::FileSystem()
 {
-	return ("FIleSystem:");
+	return ("FileSystem:");
+}
+
+std::string ErrorCodes::FailAssertion()
+{
+	return ("FailAssertion:");
+}
+
+std::string ErrorCodes::NoSuchValue()
+{
+	return ("NoSuchValue:");
 }
 
 } /* namespace Common */

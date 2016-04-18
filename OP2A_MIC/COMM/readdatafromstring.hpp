@@ -27,6 +27,74 @@ public:
 
 	static std::string read_string(std::string& line, std::string read_format);
 
+	template<class T>
+	static T read_numeric(std::string& line, std::string read_format)
+	{
+		int num;
+		T result;
+
+		// REMOVE EMPTY SPACE AT FRONT AND END
+		remove_comments(line);
+		remove_space_front(line);
+		remove_space_end(line);
+
+		// REMOVE EMPTY SPACE AT FRONT AND END
+		remove_space_front(read_format);
+		remove_space_end(read_format);
+
+
+		num = read_format.size();
+		if(line.compare(0, num, read_format) == 0)
+		{
+			line.erase(0, num);
+			remove_space_front(line);
+			std::istringstream(line) >> result;
+
+			if (line == "") result = -1;
+		}
+		else
+		{
+			result = -1;
+		}
+
+		return (result);
+	}
+
+
+	template<class T>
+	static T read_numeric(std::string& line, std::string read_format, T default_value)
+	{
+		int num;
+		T result;
+
+		// REMOVE EMPTY SPACE AT FRONT AND END
+		remove_comments(line);
+		remove_space_front(line);
+		remove_space_end(line);
+
+		// REMOVE EMPTY SPACE AT FRONT AND END
+		remove_space_front(read_format);
+		remove_space_end(read_format);
+
+
+		num = read_format.size();
+		if(line.compare(0, num, read_format) == 0)
+		{
+			line.erase(0, num);
+			remove_space_front(line);
+			std::istringstream(line) >> result;
+
+			if (line == "") result = default_value;
+		}
+		else
+		{
+			result = -1;
+		}
+
+		return (result);
+	}
+
+
 
 
 };

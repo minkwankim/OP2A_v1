@@ -12,16 +12,112 @@
  */
 
 #include "../COMM/common.hpp"
+#include "../COMM/error_codes.hpp"
+#include "../COMM/error_exception.hpp"
+
 #include "../COMM/processorinfo.hpp"
 
 namespace Common {
 
-processor_info_MIC::processor_info_MIC(int nCPU, int nMIC)
-    :num_CPU(-1), taskID(-1), num_threads(nCPU), num_MIC(nMIC)
+processor_info_MIC::processor_info_MIC()
+    :num_CPU(-1), taskID(-1), num_threads(-1), num_MIC(-1),
+	 m_set_CPU(false), m_set_MIC(false)
 {
-	for (int i = 0; i <= 3; i++) MIC_ID[i] = i;
-	for (int i = 0; i <= 3; i++) num_threads_MIC[i] = -1;
+	for (int i = 0; i <= MAX_MIC_PER_NODE-1; i++) MIC_ID[i] = -1;
+	for (int i = 0; i <= MAX_MIC_PER_NODE-1; i++) num_threads_MIC[i] = -1;
 }
+
+
+processor_info_MIC::processor_info_MIC(int nthreads_CPU, int nMIC)
+    :num_CPU(-1), taskID(-1), num_threads(nthreads_CPU), num_MIC(nMIC)
+{
+	for (int i = 0; i <= MAX_MIC_PER_NODE-1; i++) MIC_ID[i] = i;
+	for (int i = 0; i <= MAX_MIC_PER_NODE-1; i++) num_threads_MIC[i] = -1;
+
+	m_set_CPU = true;
+	m_set_MIC = true;
+}
+
+
+processor_info_MIC::processor_info_MIC(int nthreads_CPU, int nMIC, std::vector<int> i_MIC_ID)
+    :num_CPU(-1), taskID(-1), num_threads(nthreads_CPU), num_MIC(nMIC)
+{
+	if (i_MIC_ID.size() < nMIC)	Common::ExceptionError(FromHere(), "Problem in number of MIC per node", Common::ErrorCodes::ExceedLimit());
+
+	for (int i = 0; i <= nMIC; i++) MIC_ID[i] = i_MIC_ID[i];
+	for (int i = 0; i <= 3; i++) num_threads_MIC[i] = -1;
+
+	m_set_CPU = true;
+	m_set_MIC = true;
+}
+
+
+
+
+
+void processor_info_MIC::set_info(int nthreads_CPU, int nMIC)
+{
+	if (m_set_CPU != true)
+	{
+		num_threads = nthreads_CPU;
+		m_set_CPU = true;
+	}
+
+
+	if (m_set_MIC != true)
+	{
+		num_MIC     = nMIC;
+		for (int i = 0; i <= nMIC-1; i++) MIC_ID[i] = i;
+		for (int i = 0; i <= nMIC-1; i++) num_threads_MIC[i] = -1;
+
+		m_set_MIC = true;
+	}
+}
+
+
+
+void processor_info_MIC::set_info(int nthreads_CPU, int nMIC, std::vector<int> i_MIC_ID)
+{
+	if (m_set_CPU != true)
+	{
+		num_threads = nthreads_CPU;
+		m_set_CPU = true;
+	}
+
+
+	if (m_set_MIC != true)
+	{
+		num_MIC     = nMIC;
+		for (int i = 0; i <= nMIC-1; i++) MIC_ID[i] = i_MIC_ID[i];
+		for (int i = 0; i <= nMIC-1; i++) num_threads_MIC[i] = -1;
+
+		m_set_MIC = true;
+	}
+}
+
+void processor_info_MIC::update_MIC_info(int nMIC, std::vector<int> i_MIC_ID)
+{
+	num_MIC     = nMIC;
+	for (int i = 0; i <= nMIC-1; i++) MIC_ID[i] = i_MIC_ID[i];
+	for (int i = 0; i <= nMIC-1; i++) num_threads_MIC[i] = -1;
+
+	m_set_MIC = true;
+}
+
+void processor_info_MIC::update_MIC_info(int nMIC)
+{
+	num_MIC     = nMIC;
+	for (int i = 0; i <= nMIC-1; i++) MIC_ID[i] = i;
+	for (int i = 0; i <= nMIC-1; i++) num_threads_MIC[i] = -1;
+}
+
+
+void processor_info_MIC::update_CPU_info(int nthreads_CPU)
+{
+	num_threads = nthreads_CPU;
+	m_set_CPU = true;
+}
+
 
 
 void processor_info_MIC::show_info()

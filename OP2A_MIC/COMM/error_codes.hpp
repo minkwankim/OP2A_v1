@@ -39,6 +39,10 @@ public:
 
 	static std::string ExceedLimit();
 	static std::string FileSystem();
+
+	static std::string FailAssertion();
+	static std::string NoSuchValue();
+
 };
 
 } /* namespace Common */

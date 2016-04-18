@@ -16,9 +16,9 @@
 
 #include "../COMM/codelocation.hpp"
 #include "../COMM/common.hpp"
+#include "../COMM/noninstantiable.hpp"
 #include "../COMM/error_codes.hpp"
 #include "../COMM/error_exception.hpp"
-#include "../COMM/noninstantiable.hpp"
 
 
 namespace Common {

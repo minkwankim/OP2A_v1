@@ -99,6 +99,4 @@ std::string read_data_from_string::read_string(std::string& line, std::string re
 	return (result);
 }
 
-
-
 } /* namespace Common */

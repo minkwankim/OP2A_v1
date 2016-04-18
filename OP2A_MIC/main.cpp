@@ -16,6 +16,7 @@
 #include <mpi.h>
 #include <iostream>
 #include <iomanip>
+#include "mkl.h"
 
 
 #include "COMM/error_check.hpp"
@@ -27,16 +28,20 @@
 #include "UTIL/vectorstasticsfn.hpp"
 #include "UTIL/init_parallel_communication.hpp"
 
+#include "PROB/ProblemSetup.hpp"
+
+#include "GRID/grid.hpp"
+#include "GRID/Particles.hpp"
+
+
 /*
  * Global variables
  */
 
 
 
-
 int main(int argc, char *argv[])
 {
-
 	// Setting Version information
 	time_t	m_t = time(0);
 	struct	tm* m_now;
@@ -46,19 +51,35 @@ int main(int argc, char *argv[])
 
 	// Initialize MPI and Offloading Process
 	double t0;
-	Common::processor_info_MIC	proc_info(1, 2);
+	Common::processor_info_MIC	proc_info(12, 1);
 	init_parallel_communication(argc, argv, ver, proc_info, t0);
 	if (proc_info.taskID == 0) proc_info.show_info();
+
+
+	// TEST
+	GRID::precessingGridSU2("test.su2");
+
+
+
+
+
+
+
+
+
+
+	std::string filename = "test.dat";
+	ProblemCommon test_problemsetup;
+	test_problemsetup.read(filename);
 
 
 
 	// Problem Setting Section
 	std::string	simulation_title	= "Test";
-	std::string	mesh_file_name		= "FILE: PlasmaGun_ver1.cas  // FILE NAME    ";
-	simulation_title = Common::read_data_from_string::read_string(mesh_file_name, "FILE:");
+	std::string	mesh_file_name		= "FILE:// FILE NAME    ";
+	double tmp = Common::read_data_from_string::read_numeric<double>(mesh_file_name, "FILE:", 1000);
 
 
-	int a = 0;
 
 //	std::string	species_file_name	= "species_info.dat";
 }

@@ -19,6 +19,7 @@
 
 static unsigned int seed = 0x11111111;
 static VSLStreamStatePtr stream;
+static bool m_rand_flag = false;
 
 float* ranf_OMP(int N, int ncore)
 {
@@ -70,3 +71,26 @@ float ranf(void)
     *irf = 0x3F800000 | (seed >> 9);
     return (rf-1.0);
 }
+
+
+double ranf_mkl(void)
+{
+	double out;
+    if (m_rand_flag == false)
+	{
+    	vslNewStream(&stream, VSL_BRNG_SFMT19937, VSL_BRNG_RDRAND);
+    	m_rand_flag = true;
+	}
+    vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, stream, 1, &out, 0.5, 1.0);
+    return (out);
+}
+
+double ranf_range(double a, double b)
+{
+	double out = ranf_mkl();
+	double x = (b-a)*out +a;
+
+	return (x);
+}
+
+

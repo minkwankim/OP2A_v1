@@ -14,30 +14,51 @@
 #ifndef PROCESSORINFO_HPP_
 #define PROCESSORINFO_HPP_
 
+#include <vector>
 
-#define THREAD_PER_MIC_CORE	4
 #define MAX_CPUs			100
+#define MAX_MIC_PER_NODE	4
+#define THREAD_PER_MIC_CORE	4
 #define THREAD_PER_CPU		2
-#define MIC_PER_NODE		4
+
 
 
 namespace Common {
 
 class processor_info_MIC {
 public:
-	explicit processor_info_MIC(int nCPU, int nMIC);
+	processor_info_MIC();
+	processor_info_MIC(int nthreads_CPU, int nMIC);
+	processor_info_MIC(int nthreads_CPU, int nMIC, std::vector<int> i_MIC_ID);
+
+
+
 
 	int num_CPU;		    // Total number of Processor (CPUs)
 	int num_MIC;		    // Number of MICs
 
+	// CPU info
 	int taskID;			    // Current CPU ID
 	int num_threads;	    // Number of thread for CPUs
 
-	int MIC_ID[4];		    // MIC ID list
-	int num_threads_MIC[4]; // Number of thread for MIC
+	// MIC info
+	int MIC_ID[MAX_MIC_PER_NODE];		   // MIC ID list
+	int num_threads_MIC[MAX_MIC_PER_NODE]; // Number of thread for MIC
 
 	void show_info();
+	void set_info(int nthreads_CPU, int nMIC);
+	void set_info(int nthreads_CPU, int nMIC, std::vector<int> i_MIC_ID);
 
+	void update_MIC_info(int nMIC, std::vector<int> i_MIC_ID);
+	void update_MIC_info(int nMIC);
+	void update_CPU_info(int nthreads_CPU);
+
+
+
+
+private:
+	bool m_set_CPU;
+	bool m_set_MIC;
 };
 
 

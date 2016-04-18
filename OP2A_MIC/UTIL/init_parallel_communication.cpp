@@ -60,8 +60,8 @@ void init_parallel_communication(int argc, char *argv[], Common::version ver, Co
 
 
     // Check Error
-    if (proc_info.num_CPU > MAX_CPUs)		Common::ExceptionError(FromHere(), "Number of tasks exceeds MAX_CPUs", Common::ErrorCodes::ExceedLimit());
-    if (proc_info.num_MIC > MIC_PER_NODE)	Common::ExceptionError(FromHere(), "Number of MIC exceeds MIC_PER_NODE", Common::ErrorCodes::ExceedLimit());
+    if (proc_info.num_CPU > MAX_CPUs)		    Common::ExceptionError(FromHere(), "Number of tasks exceeds MAX_CPUs", Common::ErrorCodes::ExceedLimit());
+    if (proc_info.num_MIC > MAX_MIC_PER_NODE)	Common::ExceptionError(FromHere(), "Number of MIC exceeds MAX_MIC_PER_NODE", Common::ErrorCodes::ExceedLimit());
 
 
     // Print version info

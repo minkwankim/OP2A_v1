@@ -17,6 +17,8 @@
 float* ranf_OMP(int N, int ncore);
 float ranf(void);
 
+double ranf_mkl(void);
+double ranf_range(double a, double b);
 
 
 #endif /* VECTORSTASTICSFN_HPP_ */
