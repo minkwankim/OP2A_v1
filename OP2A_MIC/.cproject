@@ -36,8 +36,11 @@
 									<listOptionValue builtIn="false" value="/home/a1633125/Softwares/metis/metis-5.1.0/include"/>
 								</option>
 								<option id="intel.compilestep.data.OpenMP.369927919" name="Process OpenMP Directives" superClass="intel.compilestep.data.OpenMP" value="openmp.2" valueType="enumerated"/>
-								<option id="intel.compilestep.preprocessor.defsym.1577247879" superClass="intel.compilestep.preprocessor.defsym" valueType="definedSymbols">
+								<option id="intel.compilestep.preprocessor.defsym.1577247879" name="Preprocessor Definitions (-D)" superClass="intel.compilestep.preprocessor.defsym" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="MIC"/>
+									<listOptionValue builtIn="false" value="PIC"/>
+									<listOptionValue builtIn="false" value="USE_MKL"/>
+									<listOptionValue builtIn="false" value="CFD"/>
 								</option>
 								<inputType id="intel.cpp.c.compilestep.input.1114862419" name="C++ Sources" superClass="intel.cpp.c.compilestep.input"/>
 								<inputType id="intel.cpp.compilestep.input.826308837" name="C Sources" superClass="intel.cpp.compilestep.input"/>
@@ -49,6 +52,7 @@
 							<tool id="intel.tool.cpp.linker.composerxe.base.597605524" name="Intel C++ Linker" superClass="intel.tool.cpp.linker.composerxe.base">
 								<option id="intel.linkstep.libpath.65889453" name="Search Directory for Libraries (-L)" superClass="intel.linkstep.libpath" valueType="stringList">
 									<listOptionValue builtIn="false" value="/home/a1633125/intel/composerxe/lib/intel64"/>
+									<listOptionValue builtIn="false" value="/home/a1633125/Desktop/Development/OP2A_v1/OP2A_MIC/tecio"/>
 									<listOptionValue builtIn="false" value="/home/a1633125/intel/composerxe/lib/mic"/>
 									<listOptionValue builtIn="false" value="/home/a1633125/intel/lib/intel64"/>
 									<listOptionValue builtIn="false" value="/home/a1633125/intel/mkl/lib/intel64"/>

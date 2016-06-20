@@ -24,15 +24,24 @@
 #include "COMM/version.hpp"
 #include "COMM/processorinfo.hpp"
 #include "COMM/readdatafromstring.hpp"
+#include "COMM/MultiVector.hpp"
 
 #include "UTIL/vectorstasticsfn.hpp"
 #include "UTIL/init_parallel_communication.hpp"
+#include "UTIL/ArrayNegativeIndex.hpp"
 
 #include "PROB/ProblemSetup.hpp"
 
 #include "GRID/grid.hpp"
+#include "GRID/GridCart.hpp"
 #include "GRID/Particles.hpp"
+#include "GRID/Element.hpp"
 
+
+#include "MATH/Matrix.hpp"
+#include "MATH/Vector.hpp"
+
+#include "DATA/DataCart.hpp"
 
 /*
  * Global variables
@@ -57,10 +66,59 @@ int main(int argc, char *argv[])
 
 
 	// TEST
-	GRID::precessingGridSU2("test.su2");
+	//GRID::Grid testGrid;
+	//GRID::precessingGridSU2(std::string(argv[1]));
+	std::vector<double> testXs(DIM, 0.0);
+	std::vector<double> testXe(DIM, 0.0);	testXe[0] = 10.0; testXe[1] = 20.0;
+	std::vector<int>    testNx(DIM, 0);     testNx[0] = 100;  testNx[1] = 200;
+	std::vector<int>    testBC(4, 0);       testBC[0] = 10;   testBC[1] = 10; testBC[2] = 10; testBC[3] = 10;
+
+	GRID::CartCell testCell;
+
+	testCell.createBackgroundMesh(testXs, testXe, testNx, testBC);
+	testCell.refineCell(testCell(1,2));
+	testCell.refineCell(testCell(1, 2, 1, 2));
+	testCell(5,5)->type = -1;
+	testCell(6,5)->type = -1;
+
+	GRID::writeGridCartTecplot("testCart", testCell);
 
 
 
+
+
+
+
+
+	GRID::precessingGridSU2("test1.su2");
+
+	std::cout <<"Done!!" << std::endl;
+	std::cout <<"Done!!" << std::endl;
+
+
+	/*
+	GRID::readGrid("test.op2", testGrid);
+	GRID::processingGrid(testGrid);
+	GRID::errorCheckGrid(testGrid);
+
+	std::vector<int> cellProcID;
+	GRID::partGridBasic(testGrid, proc_info.taskID, 4);
+	std::cout << "Part is done";
+	//GRID::Grid testGrid1;
+	//GRID::partGrid(testGrid, 1, testGrid1);
+
+
+
+	// TESTing Part Mesh
+
+	vector2D dataTemp = Common::MultiVector::create2D(testGrid.NCM+1, 1);
+	for (int i = 1; i <= testGrid.NCM; i++)	dataTemp[i][0] = testGrid.mpiConfig.cellProcID[i];
+	std::vector<std::string> variableTemp(1);
+	variableTemp[0] = "CPU numbers";
+
+	std::ostringstream testTitle;
+	testTitle << "testData" << proc_info.taskID;
+	GRID::writeFulltecplotCellCenter(testTitle.str(), testGrid, dataTemp, variableTemp);
 
 
 
@@ -69,8 +127,8 @@ int main(int argc, char *argv[])
 
 
 	std::string filename = "test.dat";
-	ProblemCommon test_problemsetup;
-	test_problemsetup.read(filename);
+	//ProblemCommon test_problemsetup;
+	//test_problemsetup.read(filename);
 
 
 
@@ -82,4 +140,11 @@ int main(int argc, char *argv[])
 
 
 //	std::string	species_file_name	= "species_info.dat";
+
+ */
 }
+
+
+
+
+

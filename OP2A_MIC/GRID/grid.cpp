@@ -12,14 +12,44 @@
  */
 
 #include "grid.hpp"
+#include "../COMM/assert_mk.hpp"
 
 
 namespace GRID {
 
 
+GridSetup::GridSetup()
+: gridFactor(1.0), isAxisymmetric(false)
+{
+
+}
+
+GridSetup::~GridSetup()
+{
+
+}
+
+
+GridMPI::GridMPI()
+	: numLines(0),
+	  lines(GRID_MAX_NUM_LINES, std::vector<int>(2, 0)),
+	  sendGhostIndex(GRID_MAX_NUM_CPU, std::vector<int>(2, 0)),
+	  receiveGhostIndex(GRID_MAX_NUM_CPU, std::vector<int>(2, 0)),
+	  sendGhost(NULL),
+	  receiveGhost(NULL)
+{
+
+}
+
+GridMPI::~GridMPI()
+{
+
+}
+
+
 
 Grid::Grid()
-	:NNM(0), NFM(0), NCM(0), NGM(0)
+	:NDIM(0), NNM(0), NFM(0), NCM(0), NGM(0)
 {
 
 }
@@ -31,20 +61,40 @@ Grid::~Grid()
 
 
 
-Node* Grid::NODE(unsigned int n)
+Node& Grid::NODE(int nID)
 {
-	return (nodeIDMap.find(n));
+	op_assert(nID > 0);
+
+	int nPos = whereisNode[nID];
+	return (nodes[nPos]);
+	//return (nodeIDMap.find(nID));
 }
 
 
-Face* Grid::FACE(unsigned int f)
+Face& Grid::FACE(int fID)
 {
-	return (faceIDMap.find(f));
+	op_assert(fID > 0);
+
+	int fPos = whereisFace[fID];
+	return(faces[fPos]);
+	//return (faceIDMap.find(f));
 }
 
-Cell* Grid::CELL(unsigned int c)
+Cell& Grid::CELL(int cID)
 {
-	return (cellIDMap.find(c));
+	if (cID < 0)
+	{
+		int cPos = whereisGhost[-cID];
+		return (cells_ghost[cPos]);
+	}
+	else
+	{
+		int cPos = whereisCell[cID];
+		return (cells[cPos]);
+	}
+	//return (cellIDMap.find(c));
 }
+
+
 
 }

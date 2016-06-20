@@ -34,6 +34,8 @@ public:
 	 * [out]    = string to modify
 	 */
 	static void join (const std::string& delim, std::string parts[], unsigned int nparts, std::string& out);
+	static void join (const std::string& delim, std::string& part, std::string& out);
+
 
 
 	/*

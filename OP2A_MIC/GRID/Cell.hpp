@@ -15,7 +15,8 @@
 #define GRID_CELL_HPP_
 
 #include "grid_definitions.hpp"
-
+#include <vector>
+#include <stddef.h>
 
 
 
@@ -31,6 +32,7 @@ public:
 	int    id;
 	double vol;
 	double vol_inv;
+	double charLength;
 
 	int nnodes;
 	int nodes[GRID_CELL_MAXNNODES];
@@ -39,7 +41,55 @@ public:
 	int faces[GRID_CELL_MAXNFACES];
 
 	int type;
+	int bc;
+
+	std::vector<double> x;
+
+#ifdef CFD
+	double distWall;
+#endif
+
+#ifdef PIC
+	std::vector< std::vector<std::vector <double> > > shapeFnInverseMatrix;
+	std::vector< double> regionCoeff;
+#endif
+
 };
+
+
+
+class CellCart
+{
+public:
+	CellCart();
+	~CellCart();
+
+public:
+	int i;
+	int j;
+	int k;
+	int subIndex;
+	int lvl;
+
+	std::vector<double> xc;
+	std::vector<double> dx;
+	double vol;
+
+	int bc;
+	int type;
+
+	CellCart* 				parent;
+	std::vector<CellCart*>	children;
+	bool hasChildren;
+	bool needToRefine;
+
+
+public:
+	CellCart* refine();
+	void coarse();
+	std::vector < std::vector<double> > nodePos();
+};
+
 
 } /* namespace GRID */
 

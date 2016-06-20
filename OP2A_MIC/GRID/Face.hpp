@@ -15,6 +15,7 @@
 #define GRID_FACE_HPP_
 
 #include "grid_definitions.hpp"
+#include <vector>
 
 namespace GRID {
 
@@ -25,7 +26,7 @@ public:
 
 public:
 	int id;
-	double x[DIM];
+	std::vector<double> x;
 	double area;
 	double area_inv;
 
@@ -33,16 +34,16 @@ public:
 	int bc;
 
 	int nnodes;
-	int nodes[GRID_FACE_MAXNNODES];
+	std::vector<int> nodes;
 
 	int type;
 
-	double n[DIM][DIM];
+	std::vector< std::vector<double> > n;
 
 
 
 #ifdef CFD
-	double distToWall;
+	double distWall;
 	double nDotWall;
 
 	int cr[GRID_FACE_MAXSTENCIL];

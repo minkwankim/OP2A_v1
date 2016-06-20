@@ -37,7 +37,7 @@ Particles::~Particles()
 
 void Particles::assign_location(Grid& grid, int Cell_ID)
 {
-	switch (grid.CELL(Cell_ID)->type)
+	switch (grid.CELL(Cell_ID).type)
 	{
 	case TRI3:
 		assign_location_TRI3(grid, Cell_ID);
@@ -78,16 +78,16 @@ void Particles::assign_location_TRI3(Grid& grid, int Cell_ID)
 	}
 
 	double psi1 = 1 - Xm[0] - Xm[1];
-	double psi2 = Xm[1];
-	double psi3 = Xm[0];
+	double psi2 = Xm[0];
+	double psi3 = Xm[1];
 
-	X[0] = grid.NODE(grid.CELL(Cell_ID)->nodes[0])->x[0]*psi1
-			+ grid.NODE(grid.CELL(Cell_ID)->nodes[1])->x[0]*psi2
-			+ grid.NODE(grid.CELL(Cell_ID)->nodes[2])->x[0]*psi3;
+	X[0] = grid.NODE(grid.CELL(Cell_ID).nodes[0]).x[0]*psi1
+			+ grid.NODE(grid.CELL(Cell_ID).nodes[1]).x[0]*psi2
+			+ grid.NODE(grid.CELL(Cell_ID).nodes[2]).x[0]*psi3;
 
-	X[1] = grid.NODE(grid.CELL(Cell_ID)->nodes[0])->x[1]*psi1
-			+ grid.NODE(grid.CELL(Cell_ID)->nodes[1])->x[1]*psi2
-			+ grid.NODE(grid.CELL(Cell_ID)->nodes[2])->x[1]*psi3;
+	X[1] = grid.NODE(grid.CELL(Cell_ID).nodes[0]).x[1]*psi1
+			+ grid.NODE(grid.CELL(Cell_ID).nodes[1]).x[1]*psi2
+			+ grid.NODE(grid.CELL(Cell_ID).nodes[2]).x[1]*psi3;
 }
 
 void Particles::assign_location_QUAD4(Grid& grid, int Cell_ID)
@@ -101,15 +101,15 @@ void Particles::assign_location_QUAD4(Grid& grid, int Cell_ID)
 	double psi3 = 0.25 * (1+Xm[0]) * (1+Xm[1]);
 	double psi4 = 0.25 * (1-Xm[0]) * (1+Xm[1]);
 
-	X[0] = grid.NODE(grid.CELL(Cell_ID)->nodes[0])->x[0]*psi1
-			+ grid.NODE(grid.CELL(Cell_ID)->nodes[1])->x[0]*psi2
-			+ grid.NODE(grid.CELL(Cell_ID)->nodes[2])->x[0]*psi3
-			+ grid.NODE(grid.CELL(Cell_ID)->nodes[3])->x[0]*psi4;
+	X[0] = grid.NODE(grid.CELL(Cell_ID).nodes[0]).x[0]*psi1
+			+ grid.NODE(grid.CELL(Cell_ID).nodes[1]).x[0]*psi2
+			+ grid.NODE(grid.CELL(Cell_ID).nodes[2]).x[0]*psi3
+			+ grid.NODE(grid.CELL(Cell_ID).nodes[3]).x[0]*psi4;
 
-	X[1] = grid.NODE(grid.CELL(Cell_ID)->nodes[0])->x[1]*psi1
-			+ grid.NODE(grid.CELL(Cell_ID)->nodes[1])->x[1]*psi2
-			+ grid.NODE(grid.CELL(Cell_ID)->nodes[2])->x[1]*psi3
-			+ grid.NODE(grid.CELL(Cell_ID)->nodes[3])->x[1]*psi4;
+	X[1] = grid.NODE(grid.CELL(Cell_ID).nodes[0]).x[1]*psi1
+			+ grid.NODE(grid.CELL(Cell_ID).nodes[1]).x[1]*psi2
+			+ grid.NODE(grid.CELL(Cell_ID).nodes[2]).x[1]*psi3
+			+ grid.NODE(grid.CELL(Cell_ID).nodes[3]).x[1]*psi4;
 }
 
 
@@ -133,20 +133,20 @@ void Particles::assign_location_TETRA4(Grid& grid, int Cell_ID)
     double psi3 = Xm[1];
     double psi4 = Xm[2];
 
-	X[0] = grid.NODE(grid.CELL(Cell_ID)->nodes[0])->x[0]*psi1
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[1])->x[0]*psi2
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[2])->x[0]*psi3
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[3])->x[0]*psi4;
+	X[0] = grid.NODE(grid.CELL(Cell_ID).nodes[0]).x[0]*psi1
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[1]).x[0]*psi2
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[2]).x[0]*psi3
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[3]).x[0]*psi4;
 
-	X[1] = grid.NODE(grid.CELL(Cell_ID)->nodes[0])->x[1]*psi1
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[1])->x[1]*psi2
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[2])->x[1]*psi3
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[3])->x[1]*psi4;
+	X[1] = grid.NODE(grid.CELL(Cell_ID).nodes[0]).x[1]*psi1
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[1]).x[1]*psi2
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[2]).x[1]*psi3
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[3]).x[1]*psi4;
 
-	X[2] = grid.NODE(grid.CELL(Cell_ID)->nodes[0])->x[2]*psi1
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[1])->x[2]*psi2
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[2])->x[2]*psi3
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[3])->x[2]*psi4;
+	X[2] = grid.NODE(grid.CELL(Cell_ID).nodes[0]).x[2]*psi1
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[1]).x[2]*psi2
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[2]).x[2]*psi3
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[3]).x[2]*psi4;
 }
 
 
@@ -167,32 +167,32 @@ void Particles::assign_location_HEXA8(Grid& grid, int Cell_ID)
 	double psi8 = aux * (1-Xm[0]) * (1+Xm[1]) * (1+Xm[2]);
 
 
-	X[0] = grid.NODE(grid.CELL(Cell_ID)->nodes[0])->x[0]*psi1
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[1])->x[0]*psi2
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[2])->x[0]*psi3
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[3])->x[0]*psi4
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[4])->x[0]*psi5
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[5])->x[0]*psi6
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[6])->x[0]*psi7
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[7])->x[0]*psi8;
+	X[0] = grid.NODE(grid.CELL(Cell_ID).nodes[0]).x[0]*psi1
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[1]).x[0]*psi2
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[2]).x[0]*psi3
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[3]).x[0]*psi4
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[4]).x[0]*psi5
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[5]).x[0]*psi6
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[6]).x[0]*psi7
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[7]).x[0]*psi8;
 
-	X[1] = grid.NODE(grid.CELL(Cell_ID)->nodes[0])->x[1]*psi1
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[1])->x[1]*psi2
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[2])->x[1]*psi3
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[3])->x[1]*psi4
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[4])->x[1]*psi5
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[5])->x[1]*psi6
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[6])->x[1]*psi7
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[7])->x[1]*psi8;
+	X[1] = grid.NODE(grid.CELL(Cell_ID).nodes[0]).x[1]*psi1
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[1]).x[1]*psi2
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[2]).x[1]*psi3
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[3]).x[1]*psi4
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[4]).x[1]*psi5
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[5]).x[1]*psi6
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[6]).x[1]*psi7
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[7]).x[1]*psi8;
 
-	X[2] = grid.NODE(grid.CELL(Cell_ID)->nodes[0])->x[2]*psi1
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[1])->x[2]*psi2
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[2])->x[2]*psi3
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[3])->x[2]*psi4
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[4])->x[2]*psi5
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[5])->x[2]*psi6
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[6])->x[2]*psi7
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[7])->x[2]*psi8;
+	X[2] = grid.NODE(grid.CELL(Cell_ID).nodes[0]).x[2]*psi1
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[1]).x[2]*psi2
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[2]).x[2]*psi3
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[3]).x[2]*psi4
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[4]).x[2]*psi5
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[5]).x[2]*psi6
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[6]).x[2]*psi7
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[7]).x[2]*psi8;
 }
 
 
@@ -213,32 +213,32 @@ void Particles::assign_location_PRISM6(Grid& grid, int Cell_ID)
 	double psi8 = aux * (1-Xm[0]) * (1+Xm[1]) * (1+Xm[2]);
 
 
-	X[0] = grid.NODE(grid.CELL(Cell_ID)->nodes[0])->x[0]*psi1
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[1])->x[0]*psi2
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[2])->x[0]*psi3
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[3])->x[0]*psi4
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[4])->x[0]*psi5
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[5])->x[0]*psi6
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[6])->x[0]*psi7
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[7])->x[0]*psi8;
+	X[0] = grid.NODE(grid.CELL(Cell_ID).nodes[0]).x[0]*psi1
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[1]).x[0]*psi2
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[2]).x[0]*psi3
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[3]).x[0]*psi4
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[4]).x[0]*psi5
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[5]).x[0]*psi6
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[6]).x[0]*psi7
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[7]).x[0]*psi8;
 
-	X[1] = grid.NODE(grid.CELL(Cell_ID)->nodes[0])->x[1]*psi1
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[1])->x[1]*psi2
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[2])->x[1]*psi3
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[3])->x[1]*psi4
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[4])->x[1]*psi5
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[5])->x[1]*psi6
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[6])->x[1]*psi7
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[7])->x[1]*psi8;
+	X[1] = grid.NODE(grid.CELL(Cell_ID).nodes[0]).x[1]*psi1
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[1]).x[1]*psi2
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[2]).x[1]*psi3
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[3]).x[1]*psi4
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[4]).x[1]*psi5
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[5]).x[1]*psi6
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[6]).x[1]*psi7
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[7]).x[1]*psi8;
 
-	X[2] = grid.NODE(grid.CELL(Cell_ID)->nodes[0])->x[2]*psi1
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[1])->x[2]*psi2
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[2])->x[2]*psi3
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[3])->x[2]*psi4
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[4])->x[2]*psi5
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[5])->x[2]*psi6
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[6])->x[2]*psi7
-		 + grid.NODE(grid.CELL(Cell_ID)->nodes[7])->x[2]*psi8;
+	X[2] = grid.NODE(grid.CELL(Cell_ID).nodes[0]).x[2]*psi1
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[1]).x[2]*psi2
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[2]).x[2]*psi3
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[3]).x[2]*psi4
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[4]).x[2]*psi5
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[5]).x[2]*psi6
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[6]).x[2]*psi7
+		 + grid.NODE(grid.CELL(Cell_ID).nodes[7]).x[2]*psi8;
 }
 
 

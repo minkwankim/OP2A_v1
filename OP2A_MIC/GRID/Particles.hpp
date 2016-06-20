@@ -51,7 +51,14 @@ public:
 	void assign_location_HEXA8(Grid& grid, int cell_ID);
 	void assign_location_PRISM6(Grid& grid, int cell_ID);
 
+	bool inCell(Grid& grid, int cell_ID);
+
 };
+
+
+
+
+
 
 } /* namespace GRID */
 

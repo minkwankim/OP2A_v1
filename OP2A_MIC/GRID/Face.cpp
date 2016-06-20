@@ -16,20 +16,15 @@
 namespace GRID {
 
 Face::Face()
-: id(-1), area(0.0), area_inv(0.0), bc(-1), bcindex(-1), nnodes(0), type(-1)
+: id(-1), area(0.0), area_inv(0.0), bc(-1), bcindex(-1), nnodes(0), type(-1), x(DIM, 0.0), n(DIM, std::vector<double>(DIM, 0.0)), nodes(GRID_FACE_MAXNNODES, -1)
 {
-	for (int dim = 0; dim < DIM-1; dim++) x[dim] = 0.0;
-	for (int n = 0; n < GRID_FACE_MAXNNODES; n++)	nodes[n] = -1;
-
 #ifdef CFD
-	distToWall = 0.0;
+	distWall = 0.0;
 	nDotWall = 0.0;
 
-	for (c = 0; c < GRID_FACE_MAXSTENCIL; c++) cr[c] = -1;
-	for (c = 0; c < GRID_FACE_MAXSTENCIL; c++) cl[c] = -1;
+	for (int c = 0; c < GRID_FACE_MAXSTENCIL; c++) cr[c] = -1;
+	for (int c = 0; c < GRID_FACE_MAXSTENCIL; c++) cl[c] = -1;
 #endif
-
-
 
 }
 

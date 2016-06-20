@@ -29,6 +29,12 @@ void StringOps::join (const std::string& delim, std::string parts[], unsigned in
 	}
 }
 
+void StringOps::join (const std::string& delim, std::string& part, std::string& out)
+{
+	out = delim + part;
+}
+
+
 
 void StringOps::toLower (std::string& out)
 {

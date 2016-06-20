@@ -16,6 +16,7 @@
 
 
 #include "grid_definitions.hpp"
+#include "../COMM/MultiVector.hpp"
 
 namespace GRID {
 
@@ -27,7 +28,32 @@ public:
 
 public:
 	int id;
-	double x[DIM];
+	std::vector<double> x;
+};
+
+
+class NodeCart {
+public:
+	explicit NodeCart(int n, double x_start, double x_end);
+
+	~NodeCart();
+
+public:
+	int lowerIndex(double a);
+	int upperIndex(double a);
+	double Xc_i(int i, int ii);
+
+
+
+public:
+	std::vector<double> x;
+
+
+protected:
+	int N;
+	double x0;
+	double xe;
+	double dx[GRID_MAX_REFINEMENT_LVL+1];
 };
 
 
