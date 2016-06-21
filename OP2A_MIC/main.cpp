@@ -47,27 +47,56 @@
  * Global variables
  */
 
+#define CURRENT_MAIN_VERSION 1
+#define CURRENT_SUB_VERSION  1
+#define CURRENT_VERSION_TYPE "TEST"
+
+#define NUM_THREADS_PER_CPU       12
+#define NUM_MIC_INSTALLED         1
+
+
 
 
 int main(int argc, char *argv[])
 {
-	// Setting Version information
+	/*
+	 * ==========================================
+	 * Pre-Processing Part ver 1.0
+	 * ==========================================
+	 * It is initially developed by Min Kwan Kim
+	 *
+	 *                Last Updated
+	 *                             on 21/June/2016
+	 *                             by Min Kwan Kim
+	 */
+
+	// STEP 1. Setting Version information
+	// [Please DO NOT CHANGE
 	time_t	m_t = time(0);
 	struct	tm* m_now;
 	m_now = localtime(& m_t);
-	Common::version ver(1, 1,  m_now->tm_year + 1900, m_now->tm_mon + 1, m_now->tm_mday, "TEST");
+	Common::version ver(CURRENT_MAIN_VERSION, CURRENT_SUB_VERSION,  m_now->tm_year + 1900, m_now->tm_mon + 1, m_now->tm_mday, CURRENT_VERSION_TYPE);
 
-
-	// Initialize MPI and Offloading Process
+	// STEP 2. Initialize MPI and Offloading Process
 	double t0;
-	Common::processor_info_MIC	proc_info(12, 1);
+	Common::processor_info_MIC	proc_info(NUM_THREADS_PER_CPU, NUM_MIC_INSTALLED);
 	init_parallel_communication(argc, argv, ver, proc_info, t0);
 	if (proc_info.taskID == 0) proc_info.show_info();
 
 
-	// TEST
-	//GRID::Grid testGrid;
-	//GRID::precessingGridSU2(std::string(argv[1]));
+
+
+
+
+
+
+
+	/*
+	 * =====================================================================
+	 * [CODE TESTING SECTION]
+	 * =====================================================================
+	 * Variables for test should be started with test[XXXX]
+	 */
 	std::vector<double> testXs(DIM, 0.0);
 	std::vector<double> testXe(DIM, 0.0);	testXe[0] = 10.0; testXe[1] = 20.0;
 	std::vector<int>    testNx(DIM, 0);     testNx[0] = 100;  testNx[1] = 200;
@@ -77,20 +106,27 @@ int main(int argc, char *argv[])
 
 	testCell.createBackgroundMesh(testXs, testXe, testNx, testBC);
 	testCell.refineCell(testCell(1,2));
+	testCell.refineCell(testCell(2,2));
+
 	testCell.refineCell(testCell(1, 2, 1, 2));
-	testCell(5,5)->type = -1;
-	testCell(6,5)->type = -1;
+	testCell.refineCell(testCell(1, 2, 1, 1));
+	testCell.refineCell(testCell(1, 2, 2, 8));
 
 	GRID::writeGridCartTecplot("testCart", testCell);
 
 
 
-
-
-
-
-
 	GRID::precessingGridSU2("test1.su2");
+
+
+
+
+
+
+
+
+
+
 
 	std::cout <<"Done!!" << std::endl;
 	std::cout <<"Done!!" << std::endl;

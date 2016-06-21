@@ -70,6 +70,8 @@ public:
 	// Data Add function
     void add(const unsigned int i, const unsigned int j, const unsigned int k, T* data, bool isMain);
     void add(const unsigned int i, const unsigned int j, T* data, bool isMain);
+    void add(const unsigned int i, const unsigned int j, const unsigned int k, const unsigned int lvl, const unsigned int subindex, T* data, bool isMain);
+    void add(const unsigned int i, const unsigned int j, const unsigned int lvl, const unsigned int subindex, T* data, bool isMain);
 
 	void add(const unsigned int i, const unsigned int j, T* data);
 	void add(const unsigned int i, const unsigned int j, const unsigned int k, T* data);
@@ -83,6 +85,9 @@ public:
     // Data Access
     T* dataAccess(unsigned int i);
     int dataSize();
+
+    T* dataAccessGhost(unsigned int i);
+    int dataSizeGhost();
 };
 
 
@@ -116,12 +121,12 @@ void DataCart<T>::initialize(int nx, int ny)
 	for (int itr_i = 0; itr_i <= Nx; itr_i++)
 		for (int itr_j = 0; itr_j <= Ny; itr_j++)
 			for (int itr_k = 0; itr_k <= Nz; itr_k++)
-					m_indexMain[itr_i][itr_j][itr_k] = -1;
+					m_indexMain[itr_i][itr_j][itr_k] = m_index_NotAssigned;
 
 	for (int itr_i = 0; itr_i <= Nx; itr_i++)
 		for (int itr_j = 0; itr_j <= Ny; itr_j++)
 			for (int itr_k = 0; itr_k <= Nz; itr_k++)
-				    m_indexAncestor[itr_i][itr_j][itr_k] = -1;
+				    m_indexAncestor[itr_i][itr_j][itr_k] = m_index_NotAssigned;
 
 	m_data.reserve((Nx+1)*(Ny+1)*(Nz+1));
 }
@@ -139,12 +144,12 @@ void DataCart<T>::initialize(int nx, int ny, int nz)
 	for (int itr_i = 0; itr_i <= Nx; itr_i++)
 		for (int itr_j = 0; itr_j <= Ny; itr_j++)
 			for (int itr_k = 0; itr_k <= Nz; itr_k++)
-					m_indexMain[itr_i][itr_j][itr_k] = -1;
+					m_indexMain[itr_i][itr_j][itr_k] = m_index_NotAssigned;
 
 	for (int itr_i = 0; itr_i <= Nx; itr_i++)
 		for (int itr_j = 0; itr_j <= Ny; itr_j++)
 			for (int itr_k = 0; itr_k <= Nz; itr_k++)
-				    m_indexAncestor[itr_i][itr_j][itr_k] = -1;
+				    m_indexAncestor[itr_i][itr_j][itr_k] = m_index_NotAssigned;
 
 	m_data.reserve((Nx+1)*(Ny+1)*(Nz+1));
 }
@@ -160,22 +165,23 @@ void DataCart<T>::initialize(int nx, int ny, int nz, bool includeGhostCell)
 	{
 
 		m_indexMain     = Common::VectorMulti<int>::create(Nx+2, Ny+2, Nz+2);
-		m_indexAncestor = Common::VectorMulti<int>::create(Nx+1, Ny+1, Nz+1);
+		m_indexAncestor = Common::VectorMulti<int>::create(Nx+2, Ny+2, Nz+2);
 
 		for (int itr_i = 0; itr_i <= Nx+1; itr_i++)
 			for (int itr_j = 0; itr_j <= Ny+1; itr_j++)
 				for (int itr_k = 0; itr_k <= Nz+1; itr_k++)
-						m_indexMain[itr_i][itr_j][itr_k] = -1;
+						m_indexMain[itr_i][itr_j][itr_k] = m_index_NotAssigned;
 
-		for (int itr_i = 0; itr_i <= Nx; itr_i++)
-			for (int itr_j = 0; itr_j <= Ny; itr_j++)
-				for (int itr_k = 0; itr_k <= Nz; itr_k++)
-						m_indexAncestor[itr_i][itr_j][itr_k] = -1;
+		for (int itr_i = 0; itr_i <= Nx+1; itr_i++)
+			for (int itr_j = 0; itr_j <= Ny+1; itr_j++)
+				for (int itr_k = 0; itr_k <= Nz+1; itr_k++)
+						m_indexAncestor[itr_i][itr_j][itr_k] = m_index_NotAssigned;
 
 		m_data.reserve((Nx+1)*(Ny+1)*(Nz+1));
 
 		int aux1;
-		aux1 = 2*(Nx*Ny + Ny*Nz + Nz*Nx + GRID_MAX_NUM_CPU);
+		if (Nz != 0) aux1 = 2*(Nx*Ny + Ny*Nz + Nz*Nx);
+		else         aux1 = 2*(Nx + Ny);
 		m_ghost_data.reserve(aux1);
 	}
 	else
@@ -186,12 +192,12 @@ void DataCart<T>::initialize(int nx, int ny, int nz, bool includeGhostCell)
 		for (int itr_i = 0; itr_i <= Nx; itr_i++)
 			for (int itr_j = 0; itr_j <= Ny; itr_j++)
 				for (int itr_k = 0; itr_k <= Nz; itr_k++)
-						m_indexMain[itr_i][itr_j][itr_k] = -1;
+						m_indexMain[itr_i][itr_j][itr_k] = m_index_NotAssigned;
 
 		for (int itr_i = 0; itr_i <= Nx; itr_i++)
 			for (int itr_j = 0; itr_j <= Ny; itr_j++)
 				for (int itr_k = 0; itr_k <= Nz; itr_k++)
-					    m_indexAncestor[itr_i][itr_j][itr_k] = -1;
+					    m_indexAncestor[itr_i][itr_j][itr_k] = m_index_NotAssigned;
 
 		m_data.reserve((Nx+1)*(Ny+1)*(Nz+1));
 	}
@@ -210,7 +216,7 @@ void DataCart<T>::initializeDescendant(int MaxLvl, int refineNum)
 	m_Refine_Number = refineNum;
 
 	m_indexSubSample.resize(m_Max_lvl+1);
-	for (int itr_l = 0; itr_l <= m_Max_lvl; itr_l++) m_indexSubSample[itr_l].resize(pow(refineNum, itr_l), -1);
+	for (int itr_l = 0; itr_l <= m_Max_lvl; itr_l++) m_indexSubSample[itr_l].resize(pow(refineNum, itr_l), m_index_NotAssigned);
 }
 
 
@@ -351,10 +357,76 @@ void DataCart<T>::add(const unsigned int i, const unsigned int j, const unsigned
 template <class T>
 void DataCart<T>::add(const unsigned int i, const unsigned int j, T* data, bool isMain)
 {
-	add(i, j, 0, isMain);
+	add(i, j, 0, data, isMain);
 }
 
+template <class T>
+void DataCart<T>::add(const unsigned int i, const unsigned int j, const unsigned int k, const unsigned int lvl, const unsigned int subindex, T* data, bool isMain)
+{
+	if(lvl == 0)
+	{
+		add(i, j, k, data, isMain);
+	}
+	else
+	{
+		int indexPtr    = -1;
+		int id_Ancestor = m_indexAncestor[i][j][k];
 
+		if (id_Ancestor == m_index_NotAssigned)
+		{
+			id_Ancestor = m_indexDescendant.size();
+			m_indexAncestor[i][j][k] = id_Ancestor;
+			m_indexDescendant.push_back(m_indexSubSample);
+
+			if (isMain == true)
+			{
+				indexPtr = m_data.size();
+				m_indexDescendant[id_Ancestor][lvl][subindex] = indexPtr;
+				m_data.push_back(data);
+			}
+			else
+			{
+				indexPtr = m_ghost_data.size();
+				m_indexDescendant[id_Ancestor][lvl][subindex] = m_index_GhostDataStart - indexPtr;
+				m_ghost_data.push_back(data);
+			}
+		}
+		else
+		{
+			indexPtr = m_indexDescendant[id_Ancestor][lvl][subindex];
+			if (indexPtr == m_index_NotAssigned)
+			{
+				if (isMain == true)
+				{
+					indexPtr = m_data.size();
+					m_indexDescendant[id_Ancestor][lvl][subindex] = indexPtr;
+					m_data.push_back(data);
+				}
+				else
+				{
+					indexPtr = m_ghost_data.size();
+					m_indexDescendant[id_Ancestor][lvl][subindex] = m_index_GhostDataStart - indexPtr;
+					m_ghost_data.push_back(data);
+				}
+			}
+			else if(indexPtr >= 0)
+			{
+				m_data[indexPtr] = data;
+			}
+			else if(indexPtr <= m_index_GhostDataStart)
+			{
+				indexPtr = -(indexPtr - m_index_GhostDataStart);
+				m_ghost_data[indexPtr] = data;
+			}
+		}
+	}
+}
+
+template <class T>
+void DataCart<T>::add(const unsigned int i, const unsigned int j, const unsigned int lvl, const unsigned int subindex, T* data, bool isMain)
+{
+	add(i, j, 0, lvl, subindex, data, isMain);
+}
 
 template <class T>
 void DataCart<T>::add(const unsigned int i, const unsigned int j, const unsigned int k, T* data)
@@ -379,14 +451,11 @@ void DataCart<T>::add(const unsigned int i, const unsigned int j, const unsigned
 	}
 }
 
-
 template <class T>
 void DataCart<T>::add(const unsigned int i, const unsigned int j, T* data)
 {
-	add(i, j, 0);
+	add(i, j, 0, data);
 }
-
-
 
 template <class T>
 void DataCart<T>::add(const unsigned int i, const unsigned int j, const unsigned int k, const unsigned int lvl, const unsigned int subindex, T* data)
@@ -470,6 +539,18 @@ template <class T>
 int DataCart<T>::dataSize()
 {
 	return (m_data.size());
+}
+
+template <class T>
+T* DataCart<T>::dataAccessGhost(unsigned int i)
+{
+	return (m_ghost_data[i]);
+}
+
+template <class T>
+int DataCart<T>::dataSizeGhost()
+{
+	return (m_ghost_data.size());
 }
 
 #endif /* DATA_DATACART_HPP_ */
