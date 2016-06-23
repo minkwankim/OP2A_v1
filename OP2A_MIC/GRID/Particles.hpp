@@ -18,6 +18,15 @@
 
 namespace GRID {
 
+
+
+
+
+
+
+
+
+
 class Particles {
 public:
 	Particles();
@@ -33,7 +42,6 @@ public:
 	/* Velocities */
 	double V[3];
 
-
 	/* Internal Energies */
 	double Erot;
 	double Evib;
@@ -41,7 +49,10 @@ public:
 
 	double Wratio;
 
+	Particles* previous;
+	Particles* next;
 
+public:
 	// Internal functions
 	//void assign_location(Grid& grid, int cell_ID);
 	void assign_location(Grid& grid, int cell_ID);

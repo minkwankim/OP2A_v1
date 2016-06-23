@@ -16,6 +16,7 @@
 
 namespace GRID {
 
+
 Particles::Particles()
 : species(-1), Erot(0.0), Evib(0.0), Eele(0.0), Wratio(1.0)
 {
@@ -26,6 +27,9 @@ Particles::Particles()
     V[0] = 0.0;
     V[1] = 0.0;
     V[2] = 0.0;
+
+    previous = NULL;
+    next = NULL;
 }
 
 Particles::~Particles()

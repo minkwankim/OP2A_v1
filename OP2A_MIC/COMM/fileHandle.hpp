@@ -30,6 +30,9 @@ public:
 	static void merge (const std::string& file1, const std::string& file2, const std::string& file3, const std::string& file4);
 	static void Xmerge (const std::string& file1, const std::string& file2, const std::string& file3);
 	static void Xmerge (const std::string& file1, const std::string& file2, const std::string& file3, const std::string& file4);
+
+	static void add (const std::string& file_main, const std::string& file_sub);
+	static void Xadd (const std::string& file_main, const std::string& file_sub);
 };
 
 } /* namespace Common */

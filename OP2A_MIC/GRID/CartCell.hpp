@@ -16,6 +16,8 @@
 
 
 #include "Cell.hpp"
+#include "Face.hpp"
+
 #include "../DATA/DataCart.hpp"
 
 #if DIM == 2
@@ -35,22 +37,23 @@ public:
 	~CartCell();
 
 public:
+
+
+protected:
+	std::vector<FaceCart*> m_face_data;
+
+
+
+
+
+public:
 	void createBackgroundMesh(std::vector<double> Xs, std::vector<double> Xe, std::vector<int> Nx, std::vector<int> BC);
 	void refineCell(CellCart* cell);
 	void refineAdjustment_2D(std::vector<CellCart*> children);
-
-
+	void refineAdjustment_3D(std::vector<CellCart*> children);
 
 	CellCart* findStencil_2D(CellCart* cell, int stencilIndex);
 	CellCart* findStencil_3D(CellCart* cell, int stencilIndex);
-
-
-
-
-
-
-
-
 };
 
 } /* namespace GRID */

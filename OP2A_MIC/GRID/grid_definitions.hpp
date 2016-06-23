@@ -22,10 +22,13 @@
 #define GRID_MAX_NUM_CPU 2000
 #define GRID_GHOST_RESERVE_FOR_MPI GRID_MAX_NUM_CPU
 
+#define MIN_PARTICLE_PER_CELL 20
+
 
 // DO NOT CHANGE FOLLOWING SECTION
 #define GRID_FACE_MAXSTENCIL 2
 #define GRID_AXISMEMTRIC_Y 1.0e-8
+
 
 #ifdef DIM3D
     #define DIM 3
@@ -81,6 +84,9 @@
 #define BC_NORTH   3
 #define BC_TOP     4
 #define BC_BOTTOM  5
+
+#define PARTICLE_OLD 0
+#define PARTICLE_NEW 1
 
 #define INDEX_ADD_CPU    10
 #define INDEX_ADD_GHOST  100

@@ -39,8 +39,8 @@
 								<option id="intel.compilestep.preprocessor.defsym.1577247879" name="Preprocessor Definitions (-D)" superClass="intel.compilestep.preprocessor.defsym" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="MIC"/>
 									<listOptionValue builtIn="false" value="PIC"/>
-									<listOptionValue builtIn="false" value="USE_MKL"/>
 									<listOptionValue builtIn="false" value="CFD"/>
+									<listOptionValue builtIn="false" value="USE_MKL"/>
 								</option>
 								<inputType id="intel.cpp.c.compilestep.input.1114862419" name="C++ Sources" superClass="intel.cpp.c.compilestep.input"/>
 								<inputType id="intel.cpp.compilestep.input.826308837" name="C Sources" superClass="intel.cpp.compilestep.input"/>
@@ -128,9 +128,6 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="OP2A_MIC.intel.target.composerxe.exe.1454231426" name="Executable" projectType="intel.target.composerxe.exe"/>
 	</storageModule>
-	<storageModule moduleId="scannerConfiguration">
-		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
 		<configuration configurationName="Debug">
@@ -140,4 +137,14 @@
 			<resource resourceType="PROJECT" workspacePath="/OP2A_MIC"/>
 		</configuration>
 	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="intel.config.composerxe.exe.debug.571096156;intel.config.composerxe.exe.debug.571096156.;intel.tool.cpp.compiler.composerxe.base.1013847800;intel.cpp.compilestep.input.826308837">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.intel.compiler.cdt.managedbuilder.core.ICCManagedMakePerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="intel.config.composerxe.exe.debug.571096156;intel.config.composerxe.exe.debug.571096156.;intel.tool.cpp.compiler.composerxe.base.1013847800;intel.cpp.c.compilestep.input.1114862419">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.intel.compiler.cdt.managedbuilder.core.ICCManagedMakePerProjectProfile"/>
+		</scannerConfigBuildInfo>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

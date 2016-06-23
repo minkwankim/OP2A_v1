@@ -28,6 +28,7 @@ public:
 };
 
 void writeGridCartTecplot(const  std::string& title, CartCell& cells);
+void writeParticleCartTecplot(const  std::string& gridTecplot, CartCell& cells);
 
 
 } /* namespace GRID */

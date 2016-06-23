@@ -32,4 +32,33 @@ Face::~Face() {
 	// TODO Auto-generated destructor stub
 }
 
+
+
+/*
+ * FaceCart Class
+ */
+// Constructor and destructor
+FaceCart::FaceCart()
+: xc(DIM, 0.0), vol(0.0), direction(-1), bc(-1), type(-1), hasChildren(false), distWall(0.0), nDotWall(0.0)
+{
+	cl = NULL;
+	cr = NULL;
+
+	parent = NULL;
+	children.reserve(GRID_REFINEMENT/2);
+}
+
+FaceCart::~FaceCart()
+{
+
+}
+
+
+
+
+
+
+
+
+
 } /* namespace GRID */

@@ -15,6 +15,8 @@
 #define GRID_CELL_HPP_
 
 #include "grid_definitions.hpp"
+#include "Particle.hpp"
+
 #include <vector>
 #include <stddef.h>
 
@@ -83,11 +85,22 @@ public:
 	bool hasChildren;
 	bool needToRefine;
 
+	// Section for flow and particle data
+public:
+	std::vector< std::vector<double> > flowData;
+	std::vector< Particle* >           particle_old;
+	std::vector< Particle* >           particle_new;
+
 
 public:
 	CellCart* refine();
 	void coarse();
 	std::vector < std::vector<double> > nodePos();
+
+	void addParticle(Particle* particle, int flag);
+	void removeParticle(Particle* particle, int flag);
+	void initializeParticlePos(int flag);
+	void initializeParticlePos();
 };
 
 

@@ -81,16 +81,22 @@ double ranf_mkl(void)
     	vslNewStream(&stream, VSL_BRNG_SFMT19937, VSL_BRNG_RDRAND);
     	m_rand_flag = true;
 	}
+
     vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, stream, 1, &out, 0.5, 1.0);
     return (out);
 }
 
 double ranf_range(double a, double b)
 {
-	double out = ranf_mkl();
-	double x = (b-a)*out +a;
+	double out;
+    if (m_rand_flag == false)
+	{
+    	vslNewStream(&stream, VSL_BRNG_SFMT19937, VSL_BRNG_RDRAND);
+    	m_rand_flag = true;
+	}
 
-	return (x);
+	vdRngUniform(VSL_RNG_METHOD_UNIFORM_STD, stream, 1, &out, a, b);
+	return (out);
 }
 
 

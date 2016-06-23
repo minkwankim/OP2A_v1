@@ -25,8 +25,6 @@ public:
 	~DataBasic();
 
 
-
-
 private:
 	Common::Map1D<std::string, TYPE>	m_map;
 	std::vector<TYPE> m_data;

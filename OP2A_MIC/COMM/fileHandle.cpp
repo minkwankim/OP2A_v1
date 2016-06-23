@@ -138,4 +138,42 @@ void fileHandle::Xmerge (const std::string& file1, const std::string& file2, con
 }
 
 
+void fileHandle::add (const std::string& file_main, const std::string& file_sub)
+{
+	// Open main file as an appendix mode
+	std::ofstream outFile(file_main.c_str(), ios::app);
+	if(!outFile)
+	{
+		cerr << "[File Add]: Open Failure - Cannot find main_file" << endl;
+		exit(1);
+	}
+
+
+	// Open sub file, if can't be opened, exit
+	std::ifstream subFile(file_sub.c_str());
+	std::string line;
+
+	if(!subFile)
+	{
+		cerr << "[File Add]: Open Failure - Cannot find sub_file" << endl;
+		exit(1);
+	}
+	else
+	{
+		while(std::getline(subFile, line))
+		{
+			outFile << line << "\n";
+		}
+	}
+	subFile.close();
+}
+
+void fileHandle::Xadd (const std::string& file_main, const std::string& file_sub)
+{
+	add(file_main, file_sub);
+	remove(file_sub.c_str());
+}
+
+
+
 } /* namespace Common */

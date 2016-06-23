@@ -244,7 +244,6 @@ void writeGridtecplot(const  std::string& title, Grid& grid)
 
 
 
-
 void writeGridCartTecplot(const  std::string& title, CartCell& cells)
 {
 	std::string fileName;
@@ -278,7 +277,6 @@ void writeGridCartTecplot(const  std::string& title, CartCell& cells)
 			}
 			tecplot_cell_conn << std::endl;
 		}
-
 	}
 	tecplot_node_data << std::endl;
 
@@ -305,6 +303,46 @@ void writeGridCartTecplot(const  std::string& title, CartCell& cells)
 
 	Common::fileHandle::Xmerge("_header.tmp", "_node_data.tmp", "_cell_conn.tmp", fileName.c_str());
 }
+
+
+void writeParticleCartTecplot(const  std::string& gridTecplot, CartCell& cells)
+{
+	std::ofstream tecplot_header;     tecplot_header.open("_particle_header.tmp");
+	std::ofstream tecplot_data;       tecplot_data.open("_particle_data.tmp");
+
+	int particle = 0;
+
+	for (int c = 0; c < cells.dataSize(); c++)
+	{
+		if (cells.dataAccess(c)->type >= 0)
+		{
+			for (int p = 0; p < cells.dataAccess(c)->particle_new.size(); p++)
+			{
+				tecplot_data << std::scientific << std::setprecision(16) << cells.dataAccess(c)->particle_new[p]->X[0];
+				for (int k = 1; k < DIM; k++) tecplot_data << " " << std::scientific << std::setprecision(16) << cells.dataAccess(c)->particle_new[p]->X[k];
+				tecplot_data << std::endl;
+				particle++;
+			}
+		}
+	}
+
+	tecplot_header << std::endl <<  std::endl;
+	if (DIM == 2)   tecplot_header << std::scientific << std::setprecision(16) << "VARIABLES = \"X\" \"Y\" " << std::endl;
+	else            tecplot_header << std::scientific << std::setprecision(16) << "VARIABLES = \"X\" \"Y\" \"Z\" " << std::endl;
+
+	tecplot_header << "ZONE" << std::endl;
+	tecplot_header << "T=\" Particle DATA\"" << std::endl;
+	tecplot_header << "DATAPACKING= POINT" << std::endl;
+	tecplot_header << "I=" << particle << " J=1 K=1" <<std::endl;
+
+	tecplot_header.close();
+	tecplot_data.close();
+
+	Common::fileHandle::Xadd(gridTecplot.c_str(), "_particle_header.tmp");
+	Common::fileHandle::Xadd(gridTecplot.c_str(), "_particle_data.tmp");
+}
+
+
 
 
 }

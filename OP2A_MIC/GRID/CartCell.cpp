@@ -10,15 +10,19 @@
  *
  *	@brief Brief description of the file
  */
+#include <algorithm>
 
 #include "CartCell.hpp"
 #include "grid_definitions.hpp"
+#include "../UTIL/vectorstasticsfn.hpp"
+
 
 namespace GRID {
 
 CartCell::CartCell(){
 	initializeDescendant(GRID_MAX_REFINEMENT_LVL, GRID_REFINEMENT);
 }
+
 
 CartCell::~CartCell() {
 	// TODO Auto-generated destructor stub
@@ -40,8 +44,8 @@ void CartCell::createBackgroundMesh(std::vector<double> Xs, std::vector<double> 
 		Xi[0] = Xs[0] - 0.5*dX;
 		Yj[0] = Xs[1] - 0.5*dY;
 
-		for (int i = 1; i <= Nx[0]+1; i++) Xi[i] = Xi[1] + dX*(i-1.0);
-		for (int j = 1; j <= Nx[1]+1; j++) Yj[j] = Yj[1] + dY*(j-1.0);
+		for (int i = 1; i <= Nx[0]+1; i++) Xi[i] = Xi[i-1] + dX;
+		for (int j = 1; j <= Nx[1]+1; j++) Yj[j] = Yj[j-1] + dY;
 
 		initialize(Nx[0], Nx[1], true);
 		CellCart *celldata  = new CellCart[(Nx[0]+1)*(Nx[1]+1)];
@@ -197,6 +201,8 @@ void CartCell::createBackgroundMesh(std::vector<double> Xs, std::vector<double> 
 
 			add(i,j,cell, false);
 		}
+
+		m_hasGhostData = true;
 	}
 	else
 	{
@@ -210,14 +216,14 @@ void CartCell::createBackgroundMesh(std::vector<double> Xs, std::vector<double> 
 		double dZ = (Xe[2] - Xs[2]) / Nx[2];
 
 
-		Xi[0] = Xs[0] + 0.5*dX;
-		Yj[0] = Xs[1] + 0.5*dY;
-		Zk[0] = Xs[2] + 0.5*dZ;
+		Xi[0] = Xs[0] - 0.5*dX;
+		Yj[0] = Xs[1] - 0.5*dY;
+		Zk[0] = Xs[2] - 0.5*dZ;
 
 
-		for (int i = 1; i <= Nx[0]+1; i++) Xi[i] = Xi[1] + dX*(i-1.0);
-		for (int j = 1; j <= Nx[1]+1; j++) Yj[j] = Yj[1] + dY*(j-1.0);
-		for (int k = 1; k <= Nx[2]+1; k++) Zk[k] = Zk[1] + dZ*(k-1.0);
+		for (int i = 1; i <= Nx[0]+1; i++) Xi[i] = Xi[i-1] + dX;
+		for (int j = 1; j <= Nx[1]+1; j++) Yj[j] = Yj[j-1] + dY;
+		for (int k = 1; k <= Nx[2]+1; k++) Zk[k] = Zk[k-1] + dZ;
 
 
 		initialize(Nx[0], Nx[1], Nx[2], true);
@@ -267,7 +273,6 @@ void CartCell::createBackgroundMesh(std::vector<double> Xs, std::vector<double> 
 
 
 		n = 0;
-
 		// TOP and Bottom
 		for (int j = 1; j <= Nx[1]; j++)
 		{
@@ -339,7 +344,7 @@ void CartCell::createBackgroundMesh(std::vector<double> Xs, std::vector<double> 
 			{
 				// EAST
 				int i = 0;
-				cell = &celldata[n];
+				cell = &ghostdata[n];
 
 				cell->i = i;
 				cell->j = j;
@@ -370,7 +375,7 @@ void CartCell::createBackgroundMesh(std::vector<double> Xs, std::vector<double> 
 
 				// WEST
 				i = Nx[0]+1;
-				cell = &celldata[n];
+				cell = &ghostdata[n];
 
 				cell->i = i;
 				cell->j = j;
@@ -408,7 +413,7 @@ void CartCell::createBackgroundMesh(std::vector<double> Xs, std::vector<double> 
 			{
 				// SOUTH
 				int j = 0;
-				cell = &celldata[n];
+				cell = &ghostdata[n];
 
 				cell->i = i;
 				cell->j = j;
@@ -439,7 +444,7 @@ void CartCell::createBackgroundMesh(std::vector<double> Xs, std::vector<double> 
 
 				// NORTH
 				j = Nx[1]+1;
-				cell = &celldata[n];
+				cell = &ghostdata[n];
 
 				cell->i = i;
 				cell->j = j;
@@ -468,6 +473,8 @@ void CartCell::createBackgroundMesh(std::vector<double> Xs, std::vector<double> 
 				add(i,j,k,cell, false);
 			}
 		}
+
+		m_hasGhostData = true;
 	}
 }
 
@@ -528,6 +535,59 @@ void CartCell::refineAdjustment_2D(std::vector<CellCart*> children)
 }
 
 
+void CartCell::refineAdjustment_3D(std::vector<CellCart*> children)
+{
+	CellCart* neighbor1;
+	CellCart* neighbor2;
+	CellCart* neighbor3;
+	CellCart* neighbor4;
+	CellCart* neighbor5;
+	CellCart* neighbor6;
+
+
+	for (int i = 0; i < GRID_REFINEMENT; i++)
+	{
+		neighbor1 = findStencil(children[i], BC_NORTH);
+		neighbor2 = findStencil(children[i], BC_EAST);
+		neighbor3 = findStencil(children[i], BC_WEST);
+		neighbor4 = findStencil(children[i], BC_SOUTH);
+		neighbor5 = findStencil(children[i], BC_BOTTOM);
+		neighbor6 = findStencil(children[i], BC_TOP);
+
+		if (neighbor1->hasChildren == false && neighbor1->type >= 0 && neighbor1->lvl < children[i]->lvl-1)
+		{
+			refineCell(neighbor1);
+		}
+
+		if (neighbor2->hasChildren == false && neighbor2->type >= 0 && neighbor2->lvl < children[i]->lvl-1)
+		{
+			refineCell(neighbor2);
+		}
+
+		if (neighbor3->hasChildren == false && neighbor3->type >= 0 && neighbor3->lvl < children[i]->lvl-1)
+		{
+			refineCell(neighbor3);
+		}
+
+		if (neighbor4->hasChildren == false && neighbor4->type >= 0 && neighbor4->lvl < children[i]->lvl-1)
+		{
+			refineCell(neighbor4);
+		}
+
+		if (neighbor5->hasChildren == false && neighbor5->type >= 0 && neighbor5->lvl < children[i]->lvl-1)
+		{
+			refineCell(neighbor5);
+		}
+
+		if (neighbor6->hasChildren == false && neighbor6->type >= 0 && neighbor6->lvl < children[i]->lvl-1)
+		{
+			refineCell(neighbor6);
+		}
+
+
+
+	}
+}
 
 
 CellCart* CartCell::findStencil_2D(CellCart* cell, int stencilIndex)
@@ -664,9 +724,6 @@ CellCart* CartCell::findStencil_2D(CellCart* cell, int stencilIndex)
 
 
 
-
-
-
 CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 {
 
@@ -714,12 +771,12 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 			switch(stencilIndex)
 			{
 			case BC_WEST:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[1];
 				break;
 
 			case BC_SOUTH:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[3];
 				break;
 
@@ -732,7 +789,7 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 				break;
 
 			case BC_BOTTOM:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[4];
 				break;
 
@@ -750,12 +807,12 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 				break;
 
 			case BC_SOUTH:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[2];
 				break;
 
 			case BC_EAST:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[0];
 				break;
 
@@ -764,7 +821,7 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 				break;
 
 			case BC_BOTTOM:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[5];
 				break;
 
@@ -786,17 +843,17 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 				break;
 
 			case BC_EAST:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[3];
 				break;
 
 			case BC_NORTH:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[1];
 				break;
 
 			case BC_BOTTOM:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[6];
 				break;
 
@@ -811,7 +868,7 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 			switch(stencilIndex)
 			{
 			case BC_WEST:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[2];
 				break;
 
@@ -824,12 +881,12 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 				break;
 
 			case BC_NORTH:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[0];
 				break;
 
 			case BC_BOTTOM:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[7];
 				break;
 
@@ -845,12 +902,12 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 			switch(stencilIndex)
 			{
 			case BC_WEST:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[5];
 				break;
 
 			case BC_SOUTH:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[7];
 				break;
 
@@ -867,7 +924,7 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 				break;
 
 			case BC_TOP:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[0];
 				break;
 			}
@@ -881,12 +938,12 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 				break;
 
 			case BC_SOUTH:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[6];
 				break;
 
 			case BC_EAST:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[4];
 				break;
 
@@ -899,7 +956,7 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 				break;
 
 			case BC_TOP:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[1];
 				break;
 			}
@@ -917,12 +974,12 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 				break;
 
 			case BC_EAST:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[7];
 				break;
 
 			case BC_NORTH:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[5];
 				break;
 
@@ -931,7 +988,7 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 				break;
 
 			case BC_TOP:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[2];
 				break;
 			}
@@ -941,7 +998,7 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 			switch(stencilIndex)
 			{
 			case BC_WEST:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[6];
 				break;
 
@@ -954,7 +1011,7 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 				break;
 
 			case BC_NORTH:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[4];
 				break;
 
@@ -963,7 +1020,7 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 				break;
 
 			case BC_TOP:
-				neighbor = findStencil_2D(cell->parent, stencilIndex);
+				neighbor = findStencil(cell->parent, stencilIndex);
 				if (neighbor != NULL && neighbor->hasChildren == true) neighbor = neighbor->children[0];
 				break;
 			}
@@ -973,7 +1030,6 @@ CellCart* CartCell::findStencil_3D(CellCart* cell, int stencilIndex)
 
 	return (neighbor);
 }
-
 
 
 

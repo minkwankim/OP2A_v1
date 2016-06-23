@@ -10,9 +10,11 @@
  *
  *	@brief Brief description of the file
  */
+#include <algorithm>
 
 #include "Cell.hpp"
 #include "../COMM/MultiVector.hpp"
+#include "../UTIL/vectorstasticsfn.hpp"
 
 namespace GRID {
 
@@ -37,6 +39,9 @@ CellCart::CellCart()
 : i(0), j(0), k(0), subIndex(0), lvl(0), bc(-1), type(-1), vol(0.0), xc(DIM, 0.0), dx(DIM, 0.0), parent(NULL), hasChildren(false), needToRefine(false)
 {
 	children.reserve(GRID_REFINEMENT);
+
+	particle_old.reserve(MIN_PARTICLE_PER_CELL);
+	particle_new.reserve(MIN_PARTICLE_PER_CELL);
 }
 
 
@@ -238,6 +243,47 @@ std::vector < std::vector<double> > CellCart::nodePos()
 
 	return(nodes);
 }
+
+
+
+void CellCart::addParticle(Particle* particle, int flag)
+{
+	if (flag == PARTICLE_OLD) particle_old.push_back(particle);
+	else                      particle_new.push_back(particle);
+}
+
+
+
+
+void CellCart::removeParticle(Particle* particle, int flag)
+{
+	if (flag == PARTICLE_OLD) particle_old.erase(std::remove(particle_old.begin(), particle_old.end(), particle), particle_old.end() );
+	else                      particle_new.erase(std::remove(particle_new.begin(), particle_new.end(), particle), particle_new.end() );
+}
+
+void CellCart::initializeParticlePos(int flag)
+{
+	if (flag == PARTICLE_OLD)
+	{
+		for (int p = 0; p < particle_old.size(); p++)
+		{
+			for (int d = 0; d <= DIM-1; d++) particle_old[p]->X[d] = xc[d] + dx[d]*ranf_range(-0.5, 0.5);
+		}
+	}
+	else
+	{
+		for (int p = 0; p < particle_new.size(); p++)
+		{
+			for (int d = 0; d <= DIM-1; d++) particle_new[p]->X[d] = xc[d] + dx[d]*ranf_range(-0.5, 0.5);
+		}
+	}
+}
+
+void CellCart::initializeParticlePos()
+{
+	initializeParticlePos(PARTICLE_OLD);
+}
+
 
 
 

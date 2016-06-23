@@ -10,14 +10,12 @@
  *
  * Detailed description
  */
-
 #include <time.h>
 #include <omp.h>
 #include <mpi.h>
 #include <iostream>
 #include <iomanip>
 #include "mkl.h"
-
 
 #include "COMM/error_check.hpp"
 #include "COMM/timer.hpp"
@@ -36,7 +34,6 @@
 #include "GRID/GridCart.hpp"
 #include "GRID/Particles.hpp"
 #include "GRID/Element.hpp"
-
 
 #include "MATH/Matrix.hpp"
 #include "MATH/Vector.hpp"
@@ -88,9 +85,6 @@ int main(int argc, char *argv[])
 
 
 
-
-
-
 	/*
 	 * =====================================================================
 	 * [CODE TESTING SECTION]
@@ -98,21 +92,29 @@ int main(int argc, char *argv[])
 	 * Variables for test should be started with test[XXXX]
 	 */
 	std::vector<double> testXs(DIM, 0.0);
-	std::vector<double> testXe(DIM, 0.0);	testXe[0] = 10.0; testXe[1] = 20.0;
-	std::vector<int>    testNx(DIM, 0);     testNx[0] = 100;  testNx[1] = 200;
-	std::vector<int>    testBC(4, 0);       testBC[0] = 10;   testBC[1] = 10; testBC[2] = 10; testBC[3] = 10;
+	std::vector<double> testXe(DIM, 0.0);	testXe[0] = 10.0; testXe[1] = 20.0; //testXe[2] = 2.0;
+	std::vector<int>    testNx(DIM, 0);     testNx[0] = 10;   testNx[1] = 20;   //testNx[2] = 2;
+	std::vector<int>    testBC(4, 0);
+	testBC[0] = 10;   testBC[1] = 10; testBC[2] = 10; testBC[3] = 10;  //testBC[4] = 10;  testBC[5] = 10;
 
 	GRID::CartCell testCell;
 
 	testCell.createBackgroundMesh(testXs, testXe, testNx, testBC);
 	testCell.refineCell(testCell(1,2));
-	testCell.refineCell(testCell(2,2));
-
 	testCell.refineCell(testCell(1, 2, 1, 2));
-	testCell.refineCell(testCell(1, 2, 1, 1));
-	testCell.refineCell(testCell(1, 2, 2, 8));
+
+	std::vector<Particle> particles(20);
+
+	for (int p = 0; p < 10; p++) testCell(1,4)->addParticle(&particles[p], 1);
+	testCell(1,4)->initializeParticlePos(1);
+
+
+	for (int p = 0; p < 10; p++) testCell(1,2, 1, 3)->addParticle(&particles[p+10], 1);
+	testCell(1,2,1,3)->initializeParticlePos(1);
+
 
 	GRID::writeGridCartTecplot("testCart", testCell);
+	GRID::writeParticleCartTecplot("testCart.plt", testCell);
 
 
 

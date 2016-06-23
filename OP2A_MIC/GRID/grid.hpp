@@ -19,7 +19,6 @@
 #include "Node.hpp"
 #include "Face.hpp"
 #include "Cell.hpp"
-#include "Cell.hpp"
 #include "../UTIL/ArrayNegativeIndex.hpp"
 
 

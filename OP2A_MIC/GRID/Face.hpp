@@ -16,6 +16,10 @@
 
 #include "grid_definitions.hpp"
 #include <vector>
+#include <stddef.h>
+
+
+class CellCart;
 
 namespace GRID {
 
@@ -49,15 +53,38 @@ public:
 	int cr[GRID_FACE_MAXSTENCIL];
 	int cl[GRID_FACE_MAXSTENCIL];
 #endif
-
-
-
-
-
-
-
-
 };
+
+
+
+class FaceCart {
+public:
+	FaceCart();
+	~FaceCart();
+
+public:
+	std::vector<double> xc;
+	double vol;
+	int direction;
+
+	int bc;
+	int type;
+
+	double distWall;
+	double nDotWall;
+
+	CellCart* cl;
+	CellCart* cr;
+
+
+	FaceCart* parent;
+	std::vector<FaceCart*>	children;
+	bool hasChildren;
+};
+
+
+
+
 
 } /* namespace GRID */
 
